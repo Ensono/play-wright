@@ -6,7 +6,7 @@
   "scripts": {
     "tests:parrell": "npx playwright test --workers 2",
     "tests": "npx playwright test -g --headed",
-    "tests:browserstack":  "npx playwright test --config=./playwright.config.ts",
+    "tests:browserstack": "npx playwright test --config=./playwright.config.ts",
     "test:local": "BROWSERSTACK_LOCAL=true npx playwright test --config=./playwright-local.config.js"
   },
   "author": "Patrick Hendron",
@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "browserstack-local": "^1.5.1",
+    "chai": "^4.3.6",
+    "playwright": "^1.22.2",
     "translate": "^1.4.1"
   }
 }

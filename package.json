@@ -5,19 +5,25 @@
   "main": "index.js",
   "scripts": {
     "tests:parrell": "npx playwright test --workers 2",
-    "tests": "npx playwright test -g --headed",
+    "tests": "npx playwright test --headed",
     "tests:browserstack": "npx playwright test --config=./playwright.config.ts",
-    "test:local": "BROWSERSTACK_LOCAL=true npx playwright test --config=./playwright-local.config.js"
+    "test:local": "BROWSERSTACK_LOCAL=true npx playwright test --config=./playwright-local.config.js",
+    "tests:updatesnapshot": "npx playwright test --update-snapshots"
   },
   "author": "Patrick Hendron",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.22.2"
+    "@playwright/test": "^1.22.2",
+    "axe-playwright": "^1.1.11",
+    "babel-plugin-istanbul": "^6.1.1"
   },
   "dependencies": {
     "browserstack-local": "^1.5.1",
     "chai": "^4.3.6",
     "playwright": "^1.22.2",
-    "translate": "^1.4.1"
+    "translate": "^1.4.1",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "v8-to-istanbul": "^9.0.0"
   }
 }

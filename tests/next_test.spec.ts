@@ -1,64 +1,75 @@
+import { chromium, Browser, Page } from 'playwright';
 import { test, expect } from '@playwright/test';
 import { HEADER } from '../pom/header'
-import { grabAllDomainCombos } from '../utils/combination'
-import { markTestStatus } from '../utils/combination'
+import { grabAllDomainCombos, instantiateBrowserstack } from '../utils/helpers'
+import { markTestStatus } from '../utils/helpers'
 import {domains}  from '../fixtures/combos';
-// const expect = require('chai').expect
 import { capabilities }  from '../fixtures/browserstack_capabilities';
-const { chromium } = require('playwright');
-let pge;
-let bwsr;
+import { injectAxe, checkA11y } from 'axe-playwright';
+let vPage;
+let vBrowser;
 let testStatus;
-// import {test} from '../fixtures/fixture';
+const testing = false;
 
-const cp = require('child_process');
-const clientPlaywrightVersion = cp.execSync('npx playwright --version').toString().trim().split(' ')[1];
-
-/* //  The following code loops through the capabilities array defined above and runs your code against each environment that you have specified
-capabilities.forEach(async (cap) => {
-  await 
-}); */
-
-test.beforeEach(async () => {
-  capabilities['client.playwrightVersion'] = '1.22.2';  // Playwright version being used on your local project needs to be passed in this capability for BrowserStack to be able to map request and responses correctly
-  capabilities['browserstack.username'] = process.env.BROWSERSTACK_USERNAME || 'tinagohil4';
-  capabilities['browserstack.accessKey'] = process.env.BROWSERSTACK_ACCESS_KEY || 'BvTgTV4BLzGvsCfkAL6T';
-  
-  console.log("Starting test -->", capabilities['name']);
-  bwsr = await chromium.connect({
-      wsEndpoint: `wss://cdp.browserstack.com/playwright?caps=${encodeURIComponent(JSON.stringify(capabilities))}`,
-  });
-  pge = await bwsr.newPage();
-  // await page.goto('https://www.next.co.uk/');
-});
-
+//const cp = require('child_process');
+//const clientPlaywrightVersion = cp.execSync('npx playwright --version').toString().trim().split(' ')[1];
 
 test.describe('Testing search bar', () => {
+  test.beforeEach(async ( {page} ) => {
 
-    test('direct to multiple sites', async () => {
-        const domainList = await grabAllDomainCombos(domains);
-        // Create 1st todo.
-       for (let i = 0; i < domainList.length;){
-           console.log(domainList[i]);
-           let url = `https://www.${domainList[i]}`
-        await pge.goto(url);
-        testStatus = await expect(pge).toHaveURL(url);     
-        i++;
-       }
-      })
+    if(testing){
+      vBrowser = await instantiateBrowserstack(capabilities, chromium, vBrowser, 'Testing Search Bar');
+      vPage = await vBrowser.newPage();  
+    }
+    else {
+      vPage = page;
+      await vPage.goto('https://www.next.co.uk/');
+    }
+    
+  });
 
-      test('search for t-shirt', async ({  }) => {
-        await pge.goto('https://www.next.co.uk/');
-        await pge.locator('[class="onetrust-close-btn-handler onetrust-close-btn-ui banner-close-button ot-close-icon"]').click();
-        await pge.locator('[data-testid="header-search-bar-text-input"]').fill('t-shirt');
-        await pge.locator('[data-testid="header-search-bar-text-input"]').press('Enter');
-        testStatus = await expect(pge.locator(HEADER.RESULT_HEADER)).toContainText('t-shirt');
-        // await expect(page).toHaveScreenshot();       
-       })
-      }); 
-      
-test.afterEach(async () => {
-  markTestStatus(testStatus, pge);
-  await pge.close();
-  await bwsr.close();
-});  
+  test('direct to multiple sites', async ({  }) => {
+    const domainList = await grabAllDomainCombos(domains);
+    // Create 1st todo.
+   for (let i = 0; i < domainList.length;){
+       console.log(domainList[i]);
+       let url = `https://www.${domainList[i]}`
+    await vPage.goto(url);
+    testStatus = await expect(vPage).toHaveURL(url);     
+    i++;
+   }
+  })
+
+  test('search for t-shirt', async ({ page }) => {
+    await page.goto('https://www.next.co.uk/');
+    await vPage.locator('[class="onetrust-close-btn-handler onetrust-close-btn-ui banner-close-button ot-close-icon"]').click();
+    await expect(page).toHaveScreenshot('Testing-search-bar-search-for-t-shirt-1-chromium-darwin.png', {threshold:0.2});
+    await page.locator(HEADER.SEARCH_INPUT).fill('t-shirt');
+    await page.locator(HEADER.SEARCH_INPUT).press('Enter');
+    await expect(page.locator(HEADER.RESULT_HEADER)).toContainText('t-shirt');
+   }) 
+
+   test.afterEach(async () => {
+     if(testing){
+      markTestStatus(testStatus, vPage);
+      await vPage.close();
+      await vBrowser.close();
+     }
+  }); 
+      });  
+
+test.describe('accessibility test', ()=> {
+  let browser: Browser
+  let page: Page
+  test.beforeAll(async ()=>{
+    browser = await chromium.launch();
+    page = await browser.newPage();
+    await page.goto('https://www.next.co.uk/');
+
+    await injectAxe(page) // inject axe-core on page
+  })
+
+  test('check page', async ()=>{
+    await checkA11y(page); // execute axe at this point
+  })
+  })

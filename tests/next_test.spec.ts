@@ -3,13 +3,13 @@ import { test, expect } from '@playwright/test';
 import { HEADER } from '../pom/header'
 import { grabAllDomainCombos, instantiateBrowserstack } from '../utils/helpers'
 import { markTestStatus } from '../utils/helpers'
-import {domains}  from '../fixtures/combos';
+import { domains }  from '../fixtures/combos';
 import { capabilities }  from '../fixtures/browserstack_capabilities';
 import { injectAxe, checkA11y } from 'axe-playwright';
 let vPage;
 let vBrowser;
 let testStatus;
-const testing = false;
+const testing = true;
 
 //const cp = require('child_process');
 //const clientPlaywrightVersion = cp.execSync('npx playwright --version').toString().trim().split(' ')[1];
@@ -40,13 +40,12 @@ test.describe('Testing search bar', () => {
    }
   })
 
-  test('search for t-shirt', async ({ page }) => {
-    await page.goto('https://www.next.co.uk/');
-    await vPage.locator('[class="onetrust-close-btn-handler onetrust-close-btn-ui banner-close-button ot-close-icon"]').click();
-    await expect(page).toHaveScreenshot('Testing-search-bar-search-for-t-shirt-1-chromium-darwin.png', {threshold:0.2});
-    await page.locator(HEADER.SEARCH_INPUT).fill('t-shirt');
-    await page.locator(HEADER.SEARCH_INPUT).press('Enter');
-    await expect(page.locator(HEADER.RESULT_HEADER)).toContainText('t-shirt');
+  test('search for t-shirt', async ({  }) => {
+    await vPage.goto('https://www.next.co.uk/');
+    await vPage.locator('[class="onetrust-close-btn-handler onetrust-close-btn-ui banner-close-button ot-close-icon"]').click(); //change to find by text Accept all in ultily.
+    await vPage.locator(HEADER.SEARCH_INPUT).fill('t-shirt');
+    await vPage.locator(HEADER.SEARCH_INPUT).press('Enter');
+    testStatus = await expect(vPage.locator(HEADER.RESULT_HEADER)).toContainText('t-shirt');
    }) 
 
    test.afterEach(async () => {
@@ -57,6 +56,22 @@ test.describe('Testing search bar', () => {
      }
   }); 
       });  
+
+test.describe('visual regression test', ()=> {
+  let browser: Browser
+  let page: Page
+  test.beforeAll(async ()=>{
+    browser = await chromium.launch();
+    page = await browser.newPage();
+    await page.goto('https://www.next.co.uk/');
+  })
+
+  test('check page', async ()=>{
+    await page.goto('https://www.next.co.uk/');
+    await page.locator('[class="onetrust-close-btn-handler onetrust-close-btn-ui banner-close-button ot-close-icon"]').click();
+    await expect(page).toHaveScreenshot('Testing-search-bar-search-for-t-shirt-1-chromium-darwin.png', {threshold:0.2});
+  })
+  });
 
 test.describe('accessibility test', ()=> {
   let browser: Browser
@@ -69,7 +84,7 @@ test.describe('accessibility test', ()=> {
     await injectAxe(page) // inject axe-core on page
   })
 
-  test('check page', async ()=>{
+  test.skip('check page', async ()=>{
     await checkA11y(page); // execute axe at this point
   })
-  })
+  });

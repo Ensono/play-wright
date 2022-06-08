@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 export async function grabAllDomainCombos (obj: any){
    let queue = [obj]
    let values = []
@@ -23,10 +25,11 @@ export async function markTestStatus( status, vPage ){
 
 export async function instantiateBrowserstack( capabilities, chromium, vBrowser, testName ){
   capabilities['client.playwrightVersion'] = '1.22.2';  // Playwright version being used on your local project needs to be passed in this capability for BrowserStack to be able to map request and responses correctly
-  capabilities['browserstack.username'] = process.env.BROWSERSTACK_USERNAME || 'tinagohil4';
-  capabilities['browserstack.accessKey'] = process.env.BROWSERSTACK_ACCESS_KEY || 'BvTgTV4BLzGvsCfkAL6T';
+  capabilities['browserstack.username'] = process.env.BROWSERSTACK_USERNAME;
+  capabilities['browserstack.accessKey'] = process.env.BROWSERSTACK_ACCESS_KEY;
+  capabilities['name'] = testName;
   
-  console.log("Starting test -->", capabilities[testName]);
+  console.log("Starting test -->", capabilities['name']);
   vBrowser = await chromium.connect({
       wsEndpoint: `wss://cdp.browserstack.com/playwright?caps=${encodeURIComponent(JSON.stringify(capabilities))}`,
   });

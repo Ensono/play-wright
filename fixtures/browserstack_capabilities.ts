@@ -3,5 +3,6 @@ export const capabilities = {
   "os": "osx",
   "os_version": "catalina",
   "name": "KeywordSearch",
-  "build": "playwright-demo"
+  "build": "playwright-demo",
+  "browserstack.idleTimeout": 1000
 };

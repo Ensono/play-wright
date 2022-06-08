@@ -1,12 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { HEADER } from '../pom/header'
 import { grabAllDomainCombos } from '../utils/combination'
+import { markTestStatus } from '../utils/combination'
 import {domains}  from '../fixtures/combos';
 // const expect = require('chai').expect
 import { capabilities }  from '../fixtures/browserstack_capabilities';
 const { chromium } = require('playwright');
 let pge;
 let bwsr;
+let testStatus;
 // import {test} from '../fixtures/fixture';
 
 const cp = require('child_process');
@@ -40,23 +42,23 @@ test.describe('Testing search bar', () => {
            console.log(domainList[i]);
            let url = `https://www.${domainList[i]}`
         await pge.goto(url);
-        await expect(pge).toHaveURL(url);
+        testStatus = await expect(pge).toHaveURL(url);     
         i++;
        }
       })
 
-      test('search for t-shirt', async ({ page }) => {
-        await page.goto('https://www.next.co.uk/');
-        await page.locator('[id="onetrust-close-btn-container"]').click();
-        await page.locator('[data-testid="country-selector-close-button"]').click();
-        await page.locator(HEADER.SEARCH_INPUT).fill('t-shirt');
-        await page.locator(HEADER.SEARCH_INPUT).press('Enter');
-        await expect(page.locator(HEADER.RESULT_HEADER)).toContainText('t-shirt');
-        // await expect(page).toHaveScreenshot();
+      test('search for t-shirt', async ({  }) => {
+        await pge.goto('https://www.next.co.uk/');
+        await pge.locator('[class="onetrust-close-btn-handler onetrust-close-btn-ui banner-close-button ot-close-icon"]').click();
+        await pge.locator('[data-testid="header-search-bar-text-input"]').fill('t-shirt');
+        await pge.locator('[data-testid="header-search-bar-text-input"]').press('Enter');
+        testStatus = await expect(pge.locator(HEADER.RESULT_HEADER)).toContainText('t-shirt');
+        // await expect(page).toHaveScreenshot();       
        })
       }); 
       
 test.afterEach(async () => {
-  pge.evaluate(_ => {}, `browserstack_executor: ${JSON.stringify({action: 'setSessionStatus',arguments: {status: '<passed/failed>',reason: '<the string reason goes here>'}})}`);
+  markTestStatus(testStatus, pge);
+  await pge.close();
   await bwsr.close();
 });  

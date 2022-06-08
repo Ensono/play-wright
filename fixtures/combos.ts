@@ -8,7 +8,6 @@ export const domains = {
   "childsplay": {
     "gb": {
       "en": "childsplayclothing.co.uk",
-    },
-      "de": "childsplayclothing.com/wo/en",
+    }
     }
   };

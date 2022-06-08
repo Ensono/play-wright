@@ -10,3 +10,13 @@ export async function grabAllDomainCombos (obj: any){
    }
    return values;
 }
+
+export async function markTestStatus( status, pge ){
+  if (status = true) {
+    pge.evaluate(_ => {}, `browserstack_executor: ${JSON.stringify({action: 'setSessionStatus',arguments: {status: 'passed',reason: 'Test Passed'}})}`);
+  }
+  else if (status = null || false) {
+    pge.evaluate(_ => {}, `browserstack_executor: ${JSON.stringify({action: 'setSessionStatus',arguments: {status: 'failed',reason: 'Test Failed'}})}`);
+
+  }
+}

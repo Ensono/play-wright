@@ -1,4 +1,4 @@
-const base = require('@playwright/test');
+/* const base = require('@playwright/test');
 const cp = require('child_process');
 const clientPlaywrightVersion = cp
   .execSync('npx playwright --version')
@@ -19,6 +19,8 @@ const caps = {
   'browserstack.local': process.env.BROWSERSTACK_LOCAL || false,
   'client.playwrightVersion': clientPlaywrightVersion,
 };
+
+
 
 exports.bsLocal = new BrowserStackLocal.Local();
 
@@ -72,4 +74,4 @@ exports.test = base.test.extend({
       use(page);
     }
   },
-});
+}); */

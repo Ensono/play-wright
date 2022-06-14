@@ -1,8 +1,8 @@
 import { chromium, Browser, Page } from 'playwright';
 import { test, expect } from '@playwright/test';
 import { HEADER } from '../pom/header'
-import { grabAllDomainCombos, instantiateBrowserstack } from '../utils/helpers'
-import { markTestStatus } from '../utils/helpers'
+import { grabAllDomainCombos } from '../utils/combinations'
+import { markTestStatus, instantiateBrowserstack } from '../utils/browserstack'
 import { domains }  from '../fixtures/combos';
 import { capabilities }  from '../fixtures/browserstack_capabilities';
 import { injectAxe, checkA11y } from 'axe-playwright';

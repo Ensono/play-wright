@@ -13,6 +13,7 @@ import { devices } from '@playwright/test';
 const config: PlaywrightTestConfig = {
   testDir: './tests',
   testMatch:'*spec.ts',
+
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {
@@ -45,24 +46,24 @@ const config: PlaywrightTestConfig = {
 
   /* Configure projects for major browsers */
   projects: [
-    // {
-    //   name: 'chrome@latest:Windows 10@browserstack',
-    //   use: {
-    //     browserName: 'chromium',
-    //     channel: 'chrome'
-    //   },
-    // },
-    // {
-    //   name: 'chrome@latest-beta:OSX Big Sur@browserstack',
-    //   use: {
-    //     browserName: 'chromium',
-    //     channel: 'chrome',
-    //   },
-    // },
     {
-      name: 'chromium',
+      name: 'chrome@latest-beta:OSX Big Sur@browserstack',
       use: {
-        ...devices['Desktop Chrome'],
+        browserName: 'chromium',
+        channel: 'chrome',
+      },
+    },
+    {
+      name: 'edge@90:Windows 10@browserstack',
+      use: {
+        browserName: 'chromium'
+      },
+    },
+    {
+      name: 'playwright-firefox@latest:OSX Catalina@browserstack',
+      use: {
+        browserName: 'firefox',
+        ignoreHTTPSErrors: true
       },
     },
 
@@ -88,12 +89,12 @@ const config: PlaywrightTestConfig = {
     //     channel: 'msedge',
     //   },
     // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: {
-    //     channel: 'chrome',
-    //   },
-    // },
+    {
+      name: 'Google Chrome',
+      use: {
+        channel: 'chrome',
+      },
+    },
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */

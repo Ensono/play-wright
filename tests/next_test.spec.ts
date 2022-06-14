@@ -11,14 +11,11 @@ let vBrowser;
 let testStatus;
 const testing = true;
 
-//const cp = require('child_process');
-//const clientPlaywrightVersion = cp.execSync('npx playwright --version').toString().trim().split(' ')[1];
-
 test.describe('Testing search bar', () => {
   test.beforeEach(async ( {page} ) => {
 
     if(testing){
-      vBrowser = await instantiateBrowserstack(capabilities, chromium, vBrowser, 'Testing Search Bar');
+      vBrowser = await instantiateBrowserstack(capabilities, vBrowser, 'Testing Search Bar');
       vPage = await vBrowser.newPage();  
     }
     else {
@@ -50,7 +47,7 @@ test.describe('Testing search bar', () => {
 
    test.afterEach(async () => {
      if(testing){
-      markTestStatus(testStatus, vPage);
+      await markTestStatus(testStatus, vPage);
       await vPage.close();
       await vBrowser.close();
      }
